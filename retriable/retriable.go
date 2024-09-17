@@ -8,7 +8,7 @@ import (
 	"syscall"
 	"time"
 
-	log "github.com/SergeyIvanovDevelop/metrics-collection-and-alerting-service/pkg/logger"
+	log "github.com/SergeyIvanovDevelop/tss-tools/logger"
 	"github.com/jackc/pgerrcode"
 	"github.com/jackc/pgx/v5/pgconn"
 )
