@@ -8,8 +8,9 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/SergeyIvanovDevelop/tss-tools/pkg/logger/logiface"
-	"github.com/SergeyIvanovDevelop/tss-tools/pkg/logger/loglevels"
+	"tss-tools/pkg/logger/logiface"
+	"tss-tools/pkg/logger/loglevels"
+
 	"github.com/sirupsen/logrus"
 )
 
