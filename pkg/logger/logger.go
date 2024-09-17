@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/SergeyIvanovDevelop/tss-tools/logger/logiface"
-	// logrusext "github.com/SergeyIvanovDevelop/metrics-collection-and-alerting-service/pkg/logger/logrus"
-	slogext "github.com/SergeyIvanovDevelop/tss-tools/logger/slog"
+	"github.com/SergeyIvanovDevelop/tss-tools/pkg/logger/logiface"
+	// logrusext "github.com/SergeyIvanovDevelop/tss-tools/pkg/logger/logrus"
+	slogext "github.com/SergeyIvanovDevelop/tss-tools/pkg/logger/slog"
 )
 
 type Fields logiface.Fields
