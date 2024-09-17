@@ -9,8 +9,8 @@ import (
 	"runtime"
 	"strings"
 
-	"github.com/SergeyIvanovDevelop/metrics-collection-and-alerting-service/pkg/logger/logiface"
-	"github.com/SergeyIvanovDevelop/metrics-collection-and-alerting-service/pkg/logger/loglevels"
+	"github.com/SergeyIvanovDevelop/tss-tools/logger/logiface"
+	"github.com/SergeyIvanovDevelop/tss-tools/logger/loglevels"
 )
 
 type ExtSlog struct {
