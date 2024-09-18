@@ -5,7 +5,6 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v4"
-	"golang.org/x/crypto/bcrypt"
 )
 
 type AuthRepository interface {
@@ -32,14 +31,9 @@ func (repo *PostgresAuthRepository) Close() {
 	repo.conn.Close(context.Background())
 }
 
-func (repo *PostgresAuthRepository) CreateUser(username, password string) error {
-	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
-	if err != nil {
-		return err
-	}
-
-	_, err = repo.conn.Exec(context.Background(),
-		"INSERT INTO users_auth (username, password) VALUES ($1, $2)", username, string(hashedPassword))
+func (repo *PostgresAuthRepository) CreateUser(username, hashedPassword string) error {
+	_, err := repo.conn.Exec(context.Background(),
+		"INSERT INTO users_auth (username, password) VALUES ($1, $2)", username, hashedPassword)
 	return err
 }
 

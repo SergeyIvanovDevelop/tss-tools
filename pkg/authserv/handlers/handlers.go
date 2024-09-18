@@ -28,10 +28,17 @@ func Register(repo repository.AuthRepository) http.HandlerFunc {
 			return
 		}
 
-		err = repo.CreateUser(creds.Username, creds.Password)
+		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(creds.Password), bcrypt.DefaultCost)
+		if err != nil {
+			fmt.Println("[Register] Error process password: ", err)
+			http.Error(w, "Error process password", http.StatusInternalServerError)
+			return
+		}
+
+		err = repo.CreateUser(creds.Username, string(hashedPassword))
 		if err != nil {
 			fmt.Println("[Register] Could not register user: ", err)
-			http.Error(w, "Could not register user", http.StatusInternalServerError)
+			http.Error(w, "Could not register user", http.StatusConflict)
 			return
 		}
 
