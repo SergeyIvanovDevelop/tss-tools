@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -21,12 +22,14 @@ func Register(repo repository.AuthRepository) http.HandlerFunc {
 		var creds Credentials
 		err := json.NewDecoder(r.Body).Decode(&creds)
 		if err != nil {
+			fmt.Println("[Register] Bad request: ", err)
 			http.Error(w, "Bad request", http.StatusBadRequest)
 			return
 		}
 
 		err = repo.CreateUser(creds.Username, creds.Password)
 		if err != nil {
+			fmt.Println("[Register] Could not register user: ", err)
 			http.Error(w, "Could not register user", http.StatusInternalServerError)
 			return
 		}

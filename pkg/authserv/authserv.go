@@ -49,7 +49,7 @@ func Run(ctx context.Context, db repository.AuthRepository, config ServerConfig)
 	// Запуск сервера в отдельной горутине
 	serverErrors := make(chan error, 1)
 	go func() {
-		log.Printf("Сервер запущен на %s", config.Addr)
+		log.Printf("!Сервер запущен на %s", config.Addr)
 		serverErrors <- srv.ListenAndServe()
 	}()
 
