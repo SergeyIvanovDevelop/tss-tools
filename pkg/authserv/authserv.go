@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/SergeyIvanovDevelop/tss-tools/pkg/authserv/handlers"
-	"github.com/SergeyIvanovDevelop/tss-tools/pkg/authserv/middleware"
 	"github.com/SergeyIvanovDevelop/tss-tools/pkg/authserv/repository"
 
 	"github.com/gorilla/mux"
@@ -33,7 +32,7 @@ func Run(ctx context.Context, db repository.AuthRepository, config ServerConfig)
 	r.HandleFunc("/api/user/validate", handlers.Validate(db)).Methods("POST")
 
 	// Middleware для проверки токенов
-	r.Use(middleware.JWTAuthentication)
+	// r.Use(middleware.JWTAuthentication)
 
 	// Настройка сервера
 	srv := &http.Server{
