@@ -19,6 +19,7 @@ type Credentials struct {
 
 func Register(repo repository.AuthRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("[Register] START")
 		var creds Credentials
 		err := json.NewDecoder(r.Body).Decode(&creds)
 		if err != nil {
@@ -35,26 +36,31 @@ func Register(repo repository.AuthRepository) http.HandlerFunc {
 		}
 
 		w.WriteHeader(http.StatusCreated)
+		fmt.Println("[Register] OK")
 	}
 }
 
 func Login(repo repository.AuthRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("[Login] START")
 		var creds Credentials
 		err := json.NewDecoder(r.Body).Decode(&creds)
 		if err != nil {
+			fmt.Println("[Login] Bad request: ", err)
 			http.Error(w, "Bad request", http.StatusBadRequest)
 			return
 		}
 
 		storedPasswordHash, err := repo.GetUser(creds.Username)
 		if err != nil || bcrypt.CompareHashAndPassword([]byte(storedPasswordHash), []byte(creds.Password)) != nil {
+			fmt.Println("[Login] Unauthorized: ", err)
 			http.Error(w, "Unauthorized", http.StatusUnauthorized)
 			return
 		}
 
 		accessToken, refreshToken, err := auth.GenerateToken(creds.Username)
 		if err != nil {
+			fmt.Println("[Login] Could not generate token: ", err)
 			http.Error(w, "Could not generate token", http.StatusInternalServerError)
 			return
 		}
@@ -63,6 +69,7 @@ func Login(repo repository.AuthRepository) http.HandlerFunc {
 			"access_token":  accessToken,
 			"refresh_token": refreshToken,
 		})
+		fmt.Println("[Login] OK")
 	}
 }
 
