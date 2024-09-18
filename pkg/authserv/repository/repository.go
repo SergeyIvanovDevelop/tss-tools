@@ -39,14 +39,14 @@ func (repo *PostgresAuthRepository) CreateUser(username, password string) error 
 	}
 
 	_, err = repo.conn.Exec(context.Background(),
-		"INSERT INTO users (username, password) VALUES ($1, $2)", username, string(hashedPassword))
+		"INSERT INTO users_auth (username, password) VALUES ($1, $2)", username, string(hashedPassword))
 	return err
 }
 
 func (repo *PostgresAuthRepository) GetUser(username string) (string, error) {
 	var passwordHash string
 	err := repo.conn.QueryRow(context.Background(),
-		"SELECT password FROM users WHERE username=$1", username).Scan(&passwordHash)
+		"SELECT password FROM users_auth WHERE username=$1", username).Scan(&passwordHash)
 	if err != nil {
 		return "", err
 	}
