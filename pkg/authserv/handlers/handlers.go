@@ -122,25 +122,30 @@ type ValidateRequest struct {
 
 func Validate(repo repository.AuthRepository) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		fmt.Println("[Validate] START")
 		var validateReq ValidateRequest
 		err := json.NewDecoder(r.Body).Decode(&validateReq)
 		if err != nil || validateReq.Token == "" {
+			fmt.Println("[Validate] Invalid request")
 			http.Error(w, "Invalid request", http.StatusBadRequest)
 			return
 		}
 
 		if repo.IsInBlacklist(validateReq.Token) {
+			fmt.Println("[Validate] Token is revoked")
 			http.Error(w, "Token is revoked", http.StatusUnauthorized)
 			return
 		}
 
 		_, err = auth.ValidateToken(validateReq.Token)
 		if err != nil {
+			fmt.Println("[Validate] Invalid token")
 			http.Error(w, "Invalid token", http.StatusUnauthorized)
 			return
 		}
 
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]string{"message": "Token is valid"})
+		fmt.Println("[Validate] OK")
 	}
 }
