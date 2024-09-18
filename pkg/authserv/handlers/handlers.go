@@ -13,7 +13,7 @@ import (
 )
 
 type Credentials struct {
-	Username string `json:"username"`
+	Username string `json:"login"`
 	Password string `json:"password"`
 }
 
