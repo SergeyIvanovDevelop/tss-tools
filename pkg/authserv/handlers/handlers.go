@@ -137,7 +137,7 @@ func Validate(repo repository.AuthRepository) http.HandlerFunc {
 			return
 		}
 
-		_, err = auth.ValidateToken(validateReq.Token)
+		claims, err := auth.ValidateToken(validateReq.Token)
 		if err != nil {
 			fmt.Println("[Validate] Invalid token")
 			http.Error(w, "Invalid token", http.StatusUnauthorized)
@@ -145,7 +145,10 @@ func Validate(repo repository.AuthRepository) http.HandlerFunc {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Token is valid"})
+		json.NewEncoder(w).Encode(map[string]string{
+			"message": "Token is valid",
+			"userID":  claims.Username,
+		})
 		fmt.Println("[Validate] OK")
 	}
 }
