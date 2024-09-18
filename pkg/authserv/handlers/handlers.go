@@ -28,6 +28,12 @@ func Register(repo repository.AuthRepository) http.HandlerFunc {
 			return
 		}
 
+		if creds.Password == "" || creds.Username == "" {
+			fmt.Println("[Register] Empty username or password: ", err)
+			http.Error(w, "Empty username or password", http.StatusBadRequest)
+			return
+		}
+
 		hashedPassword, err := bcrypt.GenerateFromPassword([]byte(creds.Password), bcrypt.DefaultCost)
 		if err != nil {
 			fmt.Println("[Register] Error process password: ", err)
