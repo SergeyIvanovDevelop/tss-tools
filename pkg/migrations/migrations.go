@@ -38,5 +38,4 @@ func ApplyMigrations(connString, pathToMigrations string) error {
 	fncLogger.Info("Migrations applied successfully!")
 
 	return nil
-
 }
