@@ -82,6 +82,12 @@ func Login(repo repository.AuthRepository) http.HandlerFunc {
 			return
 		}
 
+		if creds.Username == "" || creds.Password == "" {
+			fncLogger.Error("Bad request:", err)
+			http.Error(w, "Bad request", http.StatusBadRequest)
+			return
+		}
+
 		storedPasswordHash, err := repo.GetUser(creds.Username)
 		if err != nil || bcrypt.CompareHashAndPassword([]byte(storedPasswordHash), []byte(creds.Password)) != nil {
 			fncLogger.Error("Unauthorized:", err)
