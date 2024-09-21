@@ -15,7 +15,6 @@ type Claims struct {
 }
 
 func GenerateToken(username string) (string, string, error) {
-	// Создание access токена
 	accessTokenExpiration := time.Now().Add(15 * time.Minute)
 	accessClaims := &Claims{
 		Username: username,
@@ -30,7 +29,6 @@ func GenerateToken(username string) (string, string, error) {
 		return "", "", err
 	}
 
-	// Создание refresh токена
 	refreshTokenExpiration := time.Now().Add(7 * 24 * time.Hour)
 	refreshClaims := &Claims{
 		Username: username,

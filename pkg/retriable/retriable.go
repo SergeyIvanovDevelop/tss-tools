@@ -98,6 +98,5 @@ func isRetryableError(err error) bool {
 		}
 	}
 
-	// Добавляем другие пользовательские условия для повторяемых ошибок
 	return false
 }
