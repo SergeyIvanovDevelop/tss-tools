@@ -171,7 +171,7 @@ func Validate(repo repository.AuthRepository) http.HandlerFunc {
 			return
 		}
 
-		claims, err := auth.ValidateToken(validateReq.Token)
+		claims, err := repo.ValidateToken(validateReq.Token)
 		if err != nil {
 			fncLogger.Error("Invalid token:", err)
 			http.Error(w, "Invalid token", http.StatusUnauthorized)
