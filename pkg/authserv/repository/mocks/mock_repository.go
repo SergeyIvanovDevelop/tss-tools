@@ -5,6 +5,7 @@
 package mocks
 
 import (
+	auth "github.com/SergeyIvanovDevelop/tss-tools/pkg/authserv/auth"
 	gomock "github.com/golang/mock/gomock"
 	reflect "reflect"
 	time "time"
@@ -102,4 +103,19 @@ func (m *MockAuthRepository) IsInBlacklist(arg0 string) bool {
 func (mr *MockAuthRepositoryMockRecorder) IsInBlacklist(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "IsInBlacklist", reflect.TypeOf((*MockAuthRepository)(nil).IsInBlacklist), arg0)
+}
+
+// ValidateToken mocks base method
+func (m *MockAuthRepository) ValidateToken(arg0 string) (*auth.Claims, error) {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "ValidateToken", arg0)
+	ret0, _ := ret[0].(*auth.Claims)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// ValidateToken indicates an expected call of ValidateToken
+func (mr *MockAuthRepositoryMockRecorder) ValidateToken(arg0 interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "ValidateToken", reflect.TypeOf((*MockAuthRepository)(nil).ValidateToken), arg0)
 }
