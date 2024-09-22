@@ -22,19 +22,13 @@ type ServerConfig struct {
 
 // Run запускает HTTP сервер в отдельной горутине с поддержкой graceful-shutdown.
 func Run(ctx context.Context, db repository.AuthRepository, config ServerConfig) error {
-	// Инициализация роутера
 	r := mux.NewRouter()
 
-	// Регистрация маршрутов
 	r.HandleFunc("/api/user/register", handlers.Register(db)).Methods("POST")
 	r.HandleFunc("/api/user/login", handlers.Login(db)).Methods("POST")
 	r.HandleFunc("/api/user/revoke", handlers.Revoke(db)).Methods("POST")
 	r.HandleFunc("/api/user/validate", handlers.Validate(db)).Methods("POST")
 
-	// Middleware для проверки токенов
-	// r.Use(middleware.JWTAuthentication)
-
-	// Настройка сервера
 	srv := &http.Server{
 		Addr:         config.Addr,
 		Handler:      r,
@@ -43,17 +37,14 @@ func Run(ctx context.Context, db repository.AuthRepository, config ServerConfig)
 		IdleTimeout:  config.IdleTimeout,
 	}
 
-	// Запуск планировщика для очистки черного списка токенов
 	startBlacklistCleaner(db)
 
-	// Запуск сервера в отдельной горутине
 	serverErrors := make(chan error, 1)
 	go func() {
 		log.Printf("!Сервер запущен на %s", config.Addr)
 		serverErrors <- srv.ListenAndServe()
 	}()
 
-	// Ожидание завершения через контекст
 	select {
 	case <-ctx.Done():
 		log.Println("Получен сигнал завершения работы, выключаем сервер...")
