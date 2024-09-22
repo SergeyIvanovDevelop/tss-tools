@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/SergeyIvanovDevelop/tss-tools/pkg/authserv/auth"
 	"github.com/jackc/pgx/v4"
 )
 
@@ -56,4 +57,8 @@ func (repo *PostgresAuthRepository) CleanExpiredTokens() error {
 	_, err := repo.conn.Exec(context.Background(),
 		"DELETE FROM token_blacklist WHERE expires_at < NOW()")
 	return err
+}
+
+func ValidateToken(tokenString string) (*auth.Claims, error) {
+	return auth.ValidateToken(tokenString)
 }
