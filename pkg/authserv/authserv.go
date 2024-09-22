@@ -2,15 +2,19 @@ package authserv
 
 import (
 	"context"
-	"log"
 	"net/http"
 	"time"
 
 	"github.com/SergeyIvanovDevelop/tss-tools/pkg/authserv/handlers"
 	"github.com/SergeyIvanovDevelop/tss-tools/pkg/authserv/repository"
+	log "github.com/SergeyIvanovDevelop/tss-tools/pkg/logger"
 
 	"github.com/gorilla/mux"
 )
+
+var pkgLog log.Log
+
+const pkgName string = "tss-tools/pkg/authserv"
 
 // ServerConfig содержит параметры для настройки сервера.
 type ServerConfig struct {
@@ -22,6 +26,10 @@ type ServerConfig struct {
 
 // Run запускает HTTP сервер в отдельной горутине с поддержкой graceful-shutdown.
 func Run(ctx context.Context, db repository.AuthRepository, config ServerConfig) error {
+	fncLogger := log.AddLoggerFields(pkgLog, pkgName, log.Fields{
+		"func": "Run",
+	})
+
 	r := mux.NewRouter()
 
 	r.HandleFunc("/api/user/register", handlers.Register(db)).Methods("POST")
@@ -41,22 +49,22 @@ func Run(ctx context.Context, db repository.AuthRepository, config ServerConfig)
 
 	serverErrors := make(chan error, 1)
 	go func() {
-		log.Printf("!Сервер запущен на %s", config.Addr)
+		fncLogger.Infof("Сервер аутентификации запущен на %s", config.Addr)
 		serverErrors <- srv.ListenAndServe()
 	}()
 
 	select {
 	case <-ctx.Done():
-		log.Println("Получен сигнал завершения работы, выключаем сервер...")
+		fncLogger.Info("Получен сигнал завершения работы, выключаем сервер аутентификации...")
 
 		shutdownCtx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 		defer cancel()
 
 		if err := srv.Shutdown(shutdownCtx); err != nil {
-			log.Printf("Ошибка при завершении работы сервера: %v", err)
+			fncLogger.Error("Ошибка при завершении работы сервера аутентификации: %v", err)
 			return err
 		}
-		log.Println("Сервер успешно завершил работу")
+		fncLogger.Info("Сервер аутентификации успешно завершил работу")
 		return nil
 	case err := <-serverErrors:
 		return err
@@ -64,13 +72,16 @@ func Run(ctx context.Context, db repository.AuthRepository, config ServerConfig)
 }
 
 func startBlacklistCleaner(repo repository.AuthRepository) {
-	ticker := time.NewTicker(1 * time.Hour)
+	fncLogger := log.AddLoggerFields(pkgLog, pkgName, log.Fields{
+		"func": "startBlacklistCleaner",
+	})
+	ticker := time.NewTicker(1 * time.Minute)
 	go func() {
 		for {
 			select {
 			case <-ticker.C:
 				if err := repo.CleanExpiredTokens(); err != nil {
-					log.Printf("Ошибка очистки черного списка: %v", err)
+					fncLogger.Errorf("Ошибка очистки черного списка: %v", err)
 				}
 			}
 		}
