@@ -9,11 +9,6 @@ import (
 
 var jwtKey = []byte("my_secret_key")
 
-type Claims struct {
-	Username string `json:"username"`
-	jwt.RegisteredClaims
-}
-
 func GenerateToken(username string) (string, string, error) {
 	accessTokenExpiration := time.Now().Add(15 * time.Minute)
 	accessClaims := &Claims{
