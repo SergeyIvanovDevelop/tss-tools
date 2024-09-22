@@ -59,6 +59,6 @@ func (repo *PostgresAuthRepository) CleanExpiredTokens() error {
 	return err
 }
 
-func ValidateToken(tokenString string) (*auth.Claims, error) {
+func (repo *PostgresAuthRepository) ValidateToken(tokenString string) (*auth.Claims, error) {
 	return auth.ValidateToken(tokenString)
 }
