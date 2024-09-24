@@ -63,7 +63,23 @@ func Register(repo repository.AuthRepository) http.HandlerFunc {
 			return
 		}
 
+		accessToken, refreshToken, err := auth.GenerateToken(creds.Username)
+		if err != nil {
+			fncLogger.Error("Could not generate token:", err)
+			http.Error(w, "Could not generate token", http.StatusInternalServerError)
+			return
+		}
+
 		w.WriteHeader(http.StatusCreated)
+		err = json.NewEncoder(w).Encode(map[string]string{
+			"access_token":  accessToken,
+			"refresh_token": refreshToken,
+		})
+		if err != nil {
+			fncLogger.Error("Error encoding json:", err)
+			return
+		}
+
 		fncLogger.Debug("Finished")
 	}
 }
